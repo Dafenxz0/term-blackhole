@@ -169,7 +169,13 @@ fn run_interactive(cfg: &CliConfig) -> io::Result<()> {
                 }
                 Event::Key(key)
                     if key.kind == KeyEventKind::Press
-                        && handle_key(key.code, key.modifiers, &mut scene, &mut cam, &mut paused) =>
+                        && handle_key(
+                            key.code,
+                            key.modifiers,
+                            &mut scene,
+                            &mut cam,
+                            &mut paused,
+                        ) =>
                 {
                     return Ok(());
                 }
