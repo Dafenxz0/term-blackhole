@@ -1,0 +1,16 @@
+[package]
+name = "term-blackhole"
+version = "0.1.0"
+edition = "2021"
+description = "Real-time 3D raymarching & black hole gravitational lensing renderer in your terminal"
+license = "MIT"
+repository = "https://github.com/Dafenxz0/term-blackhole"
+
+[dependencies]
+crossterm = "0.28"
+rayon = "1.10"
+
+[profile.release]
+opt-level = 3
+lto = "thin"
+codegen-units = 1
