@@ -145,7 +145,11 @@ fn shade_disk(hit: Vec3, ray_dir: Vec3, time: f32) -> (Vec3, f32) {
         mid.lerp(cool, (radial_t - 0.35) / 0.65)
     };
 
-    let blue_shift = Vec3::new(1.0 + (doppler - 1.0) * 0.25, 1.0, 1.0 + (doppler - 1.0) * 0.55);
+    let blue_shift = Vec3::new(
+        1.0 + (doppler - 1.0) * 0.25,
+        1.0,
+        1.0 + (doppler - 1.0) * 0.55,
+    );
     let emission = base_col.hadamard(blue_shift) * (1.75 * beaming);
     (emission, density)
 }

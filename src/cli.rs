@@ -64,11 +64,15 @@ where
             }
             "--benchmark" => cfg.benchmark = true,
             "-s" | "--scene" => {
-                let val = iter.next().ok_or_else(|| format!("missing value for {flag}"))?;
+                let val = iter
+                    .next()
+                    .ok_or_else(|| format!("missing value for {flag}"))?;
                 cfg.scene = SceneKind::from_name(val.as_ref())?;
             }
             "--frames" => {
-                let val = iter.next().ok_or_else(|| "missing value for --frames".to_string())?;
+                let val = iter
+                    .next()
+                    .ok_or_else(|| "missing value for --frames".to_string())?;
                 let n: usize = val
                     .as_ref()
                     .parse()
@@ -79,7 +83,9 @@ where
                 cfg.frames = Some(n);
             }
             "--width" => {
-                let val = iter.next().ok_or_else(|| "missing value for --width".to_string())?;
+                let val = iter
+                    .next()
+                    .ok_or_else(|| "missing value for --width".to_string())?;
                 let w: usize = val
                     .as_ref()
                     .parse()
@@ -90,7 +96,9 @@ where
                 cfg.width = Some(w);
             }
             "--height" => {
-                let val = iter.next().ok_or_else(|| "missing value for --height".to_string())?;
+                let val = iter
+                    .next()
+                    .ok_or_else(|| "missing value for --height".to_string())?;
                 let h: usize = val
                     .as_ref()
                     .parse()

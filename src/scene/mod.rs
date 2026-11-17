@@ -57,9 +57,15 @@ mod tests {
 
     #[test]
     fn scene_selection_parses_valid_and_rejects_invalid() {
-        assert_eq!(SceneKind::from_name("blackhole").unwrap(), SceneKind::Blackhole);
+        assert_eq!(
+            SceneKind::from_name("blackhole").unwrap(),
+            SceneKind::Blackhole
+        );
         assert_eq!(SceneKind::from_name("SPHERES").unwrap(), SceneKind::Spheres);
-        assert_eq!(SceneKind::from_name("mandelbulb").unwrap(), SceneKind::Mandelbulb);
+        assert_eq!(
+            SceneKind::from_name("mandelbulb").unwrap(),
+            SceneKind::Mandelbulb
+        );
         assert!(SceneKind::from_name("unknown").is_err());
     }
 }

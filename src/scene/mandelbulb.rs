@@ -142,12 +142,18 @@ mod tests {
         assert!(far_de > 1.0, "expected positive far DE, got {far_de}");
 
         let (origin_de, _) = mandelbulb_de(Vec3::ZERO, 8.0);
-        assert!(origin_de <= 0.01, "expected origin inside bulb, got {origin_de}");
+        assert!(
+            origin_de <= 0.01,
+            "expected origin inside bulb, got {origin_de}"
+        );
     }
 
     #[test]
     fn mandelbulb_trace_produces_non_black_surface() {
         let col = trace_mandelbulb(Vec3::new(0.0, 0.0, 2.8), Vec3::new(0.0, 0.0, -1.0), 0.0);
-        assert!(col.length() > 0.05, "expected lit fractal pixel, got {col:?}");
+        assert!(
+            col.length() > 0.05,
+            "expected lit fractal pixel, got {col:?}"
+        );
     }
 }

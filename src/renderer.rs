@@ -45,7 +45,10 @@ pub fn render_frame(fb: &mut FrameBuffer, scene: SceneKind, camera: &Camera, tim
     let inv_w = 1.0 / (w as f32);
     let inv_h = 1.0 / (h as f32);
 
-    fb.pixels.par_chunks_mut(w).enumerate().for_each(|(y, row)| {
+    fb.pixels
+        .par_chunks_mut(w)
+        .enumerate()
+        .for_each(|(y, row)| {
             let v = 1.0 - ((y as f32) + 0.5) * inv_h * 2.0;
             for (x, px) in row.iter_mut().enumerate() {
                 let u = (((x as f32) + 0.5) * inv_w * 2.0 - 1.0) * aspect;

@@ -39,8 +39,16 @@ fn scene_sdf(p: Vec3, time: f32) -> Hit {
     let orbit_z = (time * 0.9).sin() * 2.35;
 
     let candidates = [
-        (Vec3::new(0.0, 0.15 + bob * 0.4, 0.0), 1.35, MaterialId::Chrome),
-        (Vec3::new(orbit_x, -0.35 + bob, orbit_z), 0.78, MaterialId::Gold),
+        (
+            Vec3::new(0.0, 0.15 + bob * 0.4, 0.0),
+            1.35,
+            MaterialId::Chrome,
+        ),
+        (
+            Vec3::new(orbit_x, -0.35 + bob, orbit_z),
+            0.78,
+            MaterialId::Gold,
+        ),
         (
             Vec3::new(-orbit_x * 0.85, -0.15 - bob * 0.6, -orbit_z * 0.85),
             0.88,
@@ -142,9 +150,21 @@ fn shade_surface(
             };
             (checker, 0.22, Vec3::ONE)
         }
-        MaterialId::Chrome => (Vec3::new(0.75, 0.78, 0.85), 0.78, Vec3::new(0.95, 0.97, 1.0)),
-        MaterialId::Gold => (Vec3::new(0.95, 0.70, 0.24), 0.68, Vec3::new(1.0, 0.84, 0.45)),
-        MaterialId::Cobalt => (Vec3::new(0.20, 0.58, 0.95), 0.64, Vec3::new(0.55, 0.82, 1.0)),
+        MaterialId::Chrome => (
+            Vec3::new(0.75, 0.78, 0.85),
+            0.78,
+            Vec3::new(0.95, 0.97, 1.0),
+        ),
+        MaterialId::Gold => (
+            Vec3::new(0.95, 0.70, 0.24),
+            0.68,
+            Vec3::new(1.0, 0.84, 0.45),
+        ),
+        MaterialId::Cobalt => (
+            Vec3::new(0.20, 0.58, 0.95),
+            0.64,
+            Vec3::new(0.55, 0.82, 1.0),
+        ),
     };
 
     let ambient = albedo * 0.14;
