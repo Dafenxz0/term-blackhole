@@ -167,10 +167,11 @@ fn run_interactive(cfg: &CliConfig) -> io::Result<()> {
                     }
                     fb.resize(cols, rows.saturating_sub(1).max(1));
                 }
-                Event::Key(key) if key.kind == KeyEventKind::Press => {
-                    if handle_key(key.code, key.modifiers, &mut scene, &mut cam, &mut paused) {
-                        return Ok(());
-                    }
+                Event::Key(key)
+                    if key.kind == KeyEventKind::Press
+                        && handle_key(key.code, key.modifiers, &mut scene, &mut cam, &mut paused) =>
+                {
+                    return Ok(());
                 }
                 _ => {}
             }
