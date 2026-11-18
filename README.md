@@ -1,65 +1,97 @@
+<p align="center">
+  <img src="assets/readme/hero.svg" alt="term-blackhole — project visual identity" width="100%" />
+</p>
+
+<p align="center">
+  <a href="https://github.com/Dafenxz0/term-blackhole/actions/workflows/ci.yml"><img alt="GitHub Actions CI" src="https://github.com/Dafenxz0/term-blackhole/actions/workflows/ci.yml/badge.svg" /></a>
+
+</p>
+
 # term-blackhole
 
-[![CI](https://github.com/Dafenxz0/term-blackhole/actions/workflows/ci.yml/badge.svg)](https://github.com/Dafenxz0/term-blackhole/actions/workflows/ci.yml)
+### A tiny 3D universe, rendered entirely in your terminal.
 
-A real-time 3D raymarching and gravitational-lensing black hole / fractal renderer inside your terminal, written in Rust.
+A Rust raymarcher with **gravitational lensing**, a moving **accretion disk**, reflective SDF geometry and a 3D Mandelbulb. Every frame is CPU-rendered, packed into Unicode upper-half blocks and streamed using 24-bit ANSI color. No graphics window required.
 
-## Features
+## See it before running it
 
-- **3 Interactive 3D Scenes**:
-  - `blackhole`: Schwarzschild null-geodesic light bending around an event horizon, Keplerian swirling accretion disk with relativistic Doppler beaming, photon sphere halo, and warped galactic starfield.
-  - `spheres`: Reflective metallic spheres (chrome, gold, cobalt) over a 3D checkerboard floor with soft penumbra shadows, Fresnel reflection, and a moving point light.
-  - `mandelbulb`: Power-8 3D Mandelbulb distance estimator with multi-sample ambient occlusion and cosine orbit-trap coloring.
-- **2x Vertical Resolution**: Uses Unicode upper half-block glyphs (`▀`) with 24-bit ANSI TrueColor (`\x1b[38;2;...;48;2;...m`) so every terminal cell renders 2 square-aspect pixels.
-- **Multi-Core CPU Shading**: Parallelizes pixel rows across all CPU cores with `rayon`.
-- **Interactive Camera & Headless Benchmark Mode**: Live `crossterm` controls plus a `--benchmark` CLI mode for headless rendering and FPS measurement.
+The visuals below are **conceptual illustrations of the renderers and pipeline**, not terminal screenshots.
 
-## Quick Start
+![Render pipeline](assets/readme/architecture.svg)
+
+Three scenes share a camera, shader and TrueColor terminal output, but use different renderers:
+
+| Scene | What happens | Implementation |
+| --- | --- | --- |
+| `blackhole` | Schwarzschild null-geodesic light bending, an animated accretion disk, Doppler brightness and a procedural starfield | [`src/scene/blackhole.rs`](src/scene/blackhole.rs) |
+| `spheres` | Signed-distance-field geometry with metallic reflections, Fresnel shading and soft shadows | [`src/scene/spheres.rs`](src/scene/spheres.rs) |
+| `mandelbulb` | Power-8 fractal distance estimation with ambient occlusion and orbit-trap color | [`src/scene/mandelbulb.rs`](src/scene/mandelbulb.rs) |
+
+## Run it
+
+Install a recent stable Rust toolchain, then run:
 
 ```bash
+git clone https://github.com/Dafenxz0/term-blackhole.git
+cd term-blackhole
 cargo run --release -- --scene blackhole
 ```
 
-Headless benchmark (no TTY required):
+Switch scenes in the renderer using `1`, `2`, or `3`. For a terminal-free benchmark:
 
 ```bash
-cargo run --release -- --scene blackhole --frames 5 --width 80 --height 24 --benchmark
+cargo run --release -- --scene mandelbulb --frames 5 --width 80 --height 24 --benchmark
 ```
 
-## CLI Flags
+This measures the specified workload, not display refresh or a universal hardware FPS. For a meaningful comparison, keep scene, size, frame count and machine constant.
 
-| Flag | Description | Default |
+### CLI reference
+
+| Option | Purpose | Default |
 | --- | --- | --- |
-| `-s`, `--scene <NAME>` | Scene to render (`blackhole`, `spheres`, `mandelbulb`) | `blackhole` |
-| `--frames <N>` | Render `N` frames in headless mode and exit | Interactive loop |
-| `--width <W>` | Override render width in terminal columns | Auto terminal width |
-| `--height <H>` | Override render height in terminal rows | Auto terminal height |
-| `--benchmark` | Headless benchmark mode with FPS and ANSI byte metrics | `false` |
-| `-h`, `--help` | Print CLI usage and controls | `false` |
+| `-s, --scene <NAME>` | `blackhole`, `spheres`, `mandelbulb` | `blackhole` |
+| `--frames <N>` | Render N frames then exit | interactive |
+| `--width <W>` / `--height <H>` | Override terminal dimensions in cells | terminal size |
+| `--benchmark` | Headless timings, frame rate and ANSI metrics | off |
+| `-h, --help` | Available flags and controls | off |
 
-## Interactive Controls
+### Keyboard
 
 | Key | Action |
 | --- | --- |
-| `W` / `S` | Zoom camera in / out |
-| `A` / `D` or `Left` / `Right` | Orbit camera yaw |
-| `Up` / `Down` | Orbit camera pitch |
-| `1` / `2` / `3` | Switch between `blackhole`, `spheres`, `mandelbulb` |
-| `Space` | Pause / resume time animation |
-| `R` | Reset camera to scene default |
-| `q` / `Esc` | Quit |
+| `W` / `S` | Move camera nearer / farther |
+| `A` / `D`, `←` / `→` | Orbit yaw |
+| `↑` / `↓` | Orbit pitch |
+| `1` / `2` / `3` | Black hole / spheres / Mandelbulb |
+| `Space` | Pause animation |
+| `R` | Reset camera |
+| `Q` / `Esc` | Exit |
 
-## Architecture
+## How terminal pixels work
 
-- [`src/math.rs`](src/math.rs): `Vec3` algebra, ACES filmic tone mapping + sRGB gamma conversion, and orbital `Camera` ray generation.
-- [`src/scene/blackhole.rs`](src/scene/blackhole.rs): Second-order Schwarzschild geodesic integration, accretion disk crossing + Doppler beaming, and procedural starfield.
-- [`src/scene/spheres.rs`](src/scene/spheres.rs): SDF raymarcher with central-difference normals, soft shadows, and 2-bounce reflections.
-- [`src/scene/mandelbulb.rs`](src/scene/mandelbulb.rs): Power-8 Mandelbulb distance estimator, ambient occlusion, and cosine palette shading.
-- [`src/renderer.rs`](src/renderer.rs): `FrameBuffer`, `rayon` parallel row shader, and TrueColor half-block (`▀`) ANSI encoder with adjacent-cell deduplication.
-- [`src/cli.rs`](src/cli.rs) & [`src/main.rs`](src/main.rs): Argument parser, headless benchmark runner, and RAII `crossterm` interactive loop.
+[`src/renderer.rs`](src/renderer.rs) shades rows in parallel using Rayon. A terminal cell can display **two vertical image samples**: the glyph `▀` uses the foreground color for its upper half and the background color for its lower half. An `80 × 24` cell viewport therefore holds up to `80 × 48` rendered color samples. [`src/math.rs`](src/math.rs) implements `Vec3`, camera rays and tone conversion, while [`src/main.rs`](src/main.rs) handles the TTY loop.
 
-## Testing
+## Quality checks
 
 ```bash
-cargo test --verbose
+cargo fmt --all -- --check
+cargo clippy --all-targets -- -D warnings
+cargo test
 ```
+
+See the [CI workflow](.github/workflows/ci.yml) for the automated checks. Terminal colors and frame times depend on your emulator, CPU, dimensions and scene.
+
+## Project layout
+
+```text
+src/
+├── main.rs / cli.rs       Interactive TTY, argument parsing and benchmark
+├── renderer.rs            Parallel frame shading and ANSI half-block encoding
+├── math.rs                Camera, Vec3, tonemapping
+└── scene/
+    ├── blackhole.rs       Geodesics, accretion disk, stars
+    ├── spheres.rs         SDF raymarching, lighting, reflections
+    └── mandelbulb.rs      3D fractal distance estimator
+```
+
+Designed as an approachable systems-graphics experiment. **It is a procedural visualization, not an astrophysical simulation calibrated for research.**
